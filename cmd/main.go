@@ -22,14 +22,38 @@ func newTemplate() *Templates {
 	}
 }
 
+type Stats struct {
+	Total int
+	Date  string
+}
+
+type Data struct {
+	Stats []Stats
+	Name  string
+}
+
+func newStats(total int, date string) Stats {
+	return Stats{
+		Total: total,
+		Date:  date,
+	}
+}
+
 func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 
+	data := Data{
+		Name: "Tanamera Coffee Drip Bag / Filter Bag: Breakfast Blend",
+		Stats: []Stats{
+			newStats(4126, "Sun 14 Jul 2024"),
+		},
+	}
+
 	e.Renderer = newTemplate()
 
 	e.GET("/", func(c echo.Context) error {
-		return c.Render(200, "index", "")
+		return c.Render(200, "index", data)
 	})
 
 	e.Logger.Fatal(e.Start(":3000"))

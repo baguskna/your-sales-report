@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"io"
+	"your-sales-report/db"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -40,6 +41,9 @@ func newStats(total int, date string) Stats {
 }
 
 func main() {
+	db.InitDB()
+	defer db.GetDB().Close()
+
 	e := echo.New()
 	e.Use(middleware.Logger())
 

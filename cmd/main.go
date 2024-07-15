@@ -43,6 +43,10 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 
+	// serve static file in go
+	e.Static("/images", "images")
+	e.Static("/css", "css")
+
 	data := Data{
 		Name: "Tanamera Coffee Drip Bag / Filter Bag: Breakfast Blend",
 		Stats: []Stats{

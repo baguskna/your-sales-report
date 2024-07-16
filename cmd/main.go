@@ -4,6 +4,9 @@ import (
 	"html/template"
 	"io"
 	"your-sales-report/db"
+	"your-sales-report/internal/controller"
+	"your-sales-report/internal/repository"
+	"your-sales-report/internal/service"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -22,47 +25,32 @@ func newTemplate() *Templates {
 		templates: template.Must(template.ParseGlob("views/*.html")),
 	}
 }
-
-type Stats struct {
-	Total int
-	Date  string
-}
-
-type Data struct {
-	Stats []Stats
-	Name  string
-}
-
-func newStats(total int, date string) Stats {
-	return Stats{
-		Total: total,
-		Date:  date,
-	}
-}
-
 func main() {
 	db.InitDB()
-	defer db.GetDB().Close()
+	dbCon := db.GetDB()
+	defer dbCon.Close()
 
 	e := echo.New()
+
 	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
 	// serve static file in go
 	e.Static("/images", "images")
 	e.Static("/css", "css")
 
-	data := Data{
-		Name: "Tanamera Coffee Drip Bag / Filter Bag: Breakfast Blend",
-		Stats: []Stats{
-			newStats(4126, "Sun 14 Jul 2024"),
-		},
-	}
-
 	e.Renderer = newTemplate()
 
-	e.GET("/", func(c echo.Context) error {
-		return c.Render(200, "index", data)
-	})
+	// Repository
+	reportRepo := repository.NewReportRepository(dbCon)
+
+	// Service
+	reportService := service.NewReportService(reportRepo)
+
+	// Controller
+	reportController := controller.NewReportController(reportService)
+
+	e.GET("/", reportController.GetReports)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

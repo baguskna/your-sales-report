@@ -12,7 +12,7 @@ var db *sql.DB
 
 func InitDB() {
 	var err error
-	connStr := "host=db.your-sales-report.orb.local user=root password=12345 dbname=sales_report sslmode=disable"
+	connStr := "host=0.0.0.0 user=root password=12345 dbname=sales_report sslmode=disable"
 	db, err = sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)

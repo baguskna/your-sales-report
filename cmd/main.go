@@ -43,12 +43,15 @@ func main() {
 
 	// Repository
 	reportRepo := repository.NewReportRepository(dbCon)
+	// gmvRepo := repository.NewGMVRepository(dbCon)
 
 	// Service
 	reportService := service.NewReportService(reportRepo)
+	// gmvService := service.NewGMVService(gmvRepo)
 
 	// Controller
 	reportController := controller.NewReportController(reportService)
+	// gmvController := controller.NewGMVController(gmvService)
 
 	e.GET("/", reportController.GetReports)
 

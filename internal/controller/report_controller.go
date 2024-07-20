@@ -7,6 +7,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type ReportData struct {
+	TotalGMV string
+}
+
 type ReportController struct {
 	reportService *service.ReportService
 }
@@ -16,11 +20,16 @@ func NewReportController(s *service.ReportService) *ReportController {
 }
 
 func (h *ReportController) GetReports(c echo.Context) error {
-	reports, err := h.reportService.GetReports()
+	value, err := h.reportService.GetTotalGMV()
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to get reports"})
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to get total gmv"})
+
 	}
 
-	return c.Render(200, "index", reports)
+	data := ReportData{
+		TotalGMV: value.Value,
+	}
+
+	return c.Render(200, "index", data)
 }

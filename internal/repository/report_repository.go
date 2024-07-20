@@ -3,6 +3,8 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"strconv"
 	"time"
 	"your-sales-report/internal/domain"
 
@@ -75,4 +77,25 @@ func (r *ReportRepository) GetReports() ([]domain.Report, error) {
 	}
 
 	return reports, nil
+}
+
+func (r *ReportRepository) GetTotalGMV() (*domain.GMV, error) {
+	query := `SELECT COALESCE(SUM(value), 0) as total_gmv FROM raw_data GROUP BY official_store;`
+
+	var gmvValue float64
+
+	err := r.DB.QueryRow(query).Scan(&gmvValue)
+	if err != nil {
+		log.Printf("Error fetching total GMV: %v", err)
+		return &domain.GMV{Value: "0"}, err
+	}
+
+	fmt.Println(query)
+
+	// Convert float64 to string with specific precision
+	formattedValue := strconv.FormatFloat(gmvValue, 'f', -1, 64)
+
+	return &domain.GMV{
+		Value: formattedValue,
+	}, err
 }

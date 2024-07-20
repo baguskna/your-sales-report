@@ -11,3 +11,6 @@ how to run migration (make sure install goose first ya):
 
 create new migration:
 `goose create column sql`
+
+copy data from csv
+` \COPY raw_data (order_date,order_number,official_store,brand,marketplace,province,shipping_type,sku,product,quantity,value,barcode) FROM './20240720_070146.csv' DELIMITER ',' CSV HEADER;`

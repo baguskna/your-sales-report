@@ -16,3 +16,7 @@ type Stat struct {
 	Date     string
 	ReportID uuid.UUID // foreign key of report id
 }
+
+type GMV struct {
+	Value string
+}

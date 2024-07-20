@@ -1,0 +1,8 @@
+{{ block "total_order_and_percentage" . }}
+  {{ range .TotalOrderAndPercentage }}
+  <p>Total order: {{ .TotalOrder }}</p>
+  <p>Marketplace: {{ .Marketplace }}</p>
+  <p>Percentage: {{ .Percentage }}%</p>
+</br>
+  {{ end }}
+{{ end }}

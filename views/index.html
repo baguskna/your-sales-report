@@ -15,10 +15,8 @@
 <body class="bg-slate-50">
   <div class="px-4 pt-5 w-full h-full">
     <h1 class="text-xl font-bold">Your sales report</h1>
-    <!-- <div class="charts-wrapper grid grid-cols-1 md:grid-cols-2 gap-4"> -->
-
-    <!-- </div> -->
      {{ template "gmv" . }}
+     {{ template "total_order_and_percentage" . }}
   </div>
 </body>
 

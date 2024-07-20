@@ -99,3 +99,39 @@ func (r *ReportRepository) GetTotalGMV() (*domain.GMV, error) {
 		Value: formattedValue,
 	}, err
 }
+
+func (r *ReportRepository) GetTotalOrderAndPercentageByMarketplace() ([]domain.TotalOrderAndPercentage, error) {
+	// this query only works for a principal, because the source of data a principal only
+	query := `
+			SELECT 
+				DISTINCT marketplace,
+				COUNT(order_number) AS total_order,
+				ROUND((SUM(value) / (SELECT SUM(value) FROM raw_data) * 100)::NUMERIC, 2) AS percentage
+			FROM 
+				raw_data
+			GROUP BY 
+				official_store, marketplace;`
+
+	rows, err := r.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	fmt.Println(query)
+
+	var results []domain.TotalOrderAndPercentage
+
+	for rows.Next() {
+		var result domain.TotalOrderAndPercentage
+
+		if err := rows.Scan(&result.Marketplace, &result.TotalOrder, &result.Percentage); err != nil {
+			log.Printf("Error fetching marketplace, total order, percentage: %v", err)
+			return nil, err
+		}
+
+		results = append(results, result)
+	}
+
+	return results, nil
+}

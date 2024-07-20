@@ -20,3 +20,9 @@ type Stat struct {
 type GMV struct {
 	Value string
 }
+
+type TotalOrderAndPercentage struct {
+	Marketplace string
+	Percentage  float64
+	TotalOrder  int
+}

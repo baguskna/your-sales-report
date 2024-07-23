@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"html/template"
 	"io"
+	"log"
 	"your-sales-report/db"
 	"your-sales-report/internal/controller"
 	"your-sales-report/internal/repository"
@@ -10,6 +13,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/tmc/langchaingo/llms"
+	"github.com/tmc/langchaingo/llms/openai"
 )
 
 type Templates struct {
@@ -52,7 +57,20 @@ func main() {
 
 	e.GET("/", reportController.GetReports)
 	e.GET("/ask_ai", controller.AskAIController)
-	// e.POST("/ask_ai")
+	llm, err := openai.New()
+	if err != nil {
+		log.Fatal(err)
+	}
+	ctx := context.Background()
+	completion, err := llm.Call(ctx, "what companies does elon has",
+		llms.WithTemperature(0.8),
+		llms.WithStopWords([]string{""}),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(completion, "open ai")
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -13,7 +12,9 @@ func AskAIController(c echo.Context) error {
 
 func AskAIPostController(c echo.Context) error {
 	query := c.FormValue("query")
-	fmt.Println(query, "controller ai")
+	if query == "" {
+		return c.String(http.StatusBadRequest, "query can't be null")
+	}
 	response := "okok " + query
 	return c.String(http.StatusOK, response)
 }

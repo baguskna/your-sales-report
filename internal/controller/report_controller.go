@@ -63,10 +63,13 @@ func generateTotalOrderChart(orders []domain.TotalOrderAndPercentage) template.H
 	bar.SetXAxis(xAxis).
 		AddSeries("Total Order", yAxis)
 
+	// Store the bar chart html inside a byte buffer
 	var buf bytes.Buffer
 	if err := bar.Render(&buf); err != nil {
 		panic(err)
 	}
 
+	// buf.String() is to convert the byte type to string because it countains html chart
+	// template.HTML is to convert string html to real html code that can be appent inside html code
 	return template.HTML(buf.String())
 }
